@@ -51,15 +51,18 @@ class DBBL(Bank):
     def withdraw(self, username):
         amount = int(input("Enter withdraw amount:"))
         balance = self.customer_balance_info[username]
-        if amount <= balance and self.get_total_balance() > amount:
-            self.customer_balance_info[username] -= amount
-            transaction = Bank.transaction_text(username, "withdraw", amount)
-            self.transaction_history.append(transaction)
-            print(
-                f"{amount} has been withdrawan successfully,CB:{self.customer_balance_info[username]}"
-            )
+        if amount <= balance:
+            if self.get_total_balance() - self.get_total_loan() > amount:
+                self.customer_balance_info[username] -= amount
+                transaction = Bank.transaction_text(username, "withdraw", amount)
+                self.transaction_history.append(transaction)
+                print(
+                    f"{amount} has been withdrawan successfully,CB:{self.customer_balance_info[username]}"
+                )
+            else:
+                print("The bank is bankrupted")
         else:
-            print("The bank is bankrupted")
+            print("Not enough fund in your bank account")
 
     def check_balance(self, username):
         print(f"Current balance {self.customer_balance_info[username]}")
